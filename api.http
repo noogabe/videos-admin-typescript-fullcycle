@@ -1,0 +1,168 @@
+## valid uuid = 8f4b7b9c-3f7a-4b6c-8b0c-1c9c5b8b9b6a
+
+### 
+# @name createCategory
+POST http://localhost:3000/categories
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+    "name": "Category 1",
+    "description": "Description 1"
+}
+
+###
+
+@categoryId = {{createCategory.response.body.data.id}}
+
+###
+GET http://localhost:3000/categories
+Authorization: Bearer {{jwtToken}}
+
+###
+GET http://localhost:3000/categories/8f4b7b9c-3f7a-4b6c-8b0c-1c9c5b8b9b6a
+
+
+### 
+# @name createGenre
+POST http://localhost:3000/genres
+Content-Type: application/json
+
+{
+    "name": "Genre 1",
+    "categories_id": [
+        "{{categoryId}}"
+    ]
+}
+
+###
+
+@genreId = {{createGenre.response.body.data.id}}
+
+###
+
+# @name createCastMember
+POST http://localhost:3000/cast-members
+Content-Type: application/json
+
+{
+    "name": "Cast Member 1",
+    "type": 1
+}
+
+###
+
+@castMemberId = {{createCastMember.response.body.data.id}}
+
+
+###
+# @name createVideo
+POST http://localhost:3000/videos
+Content-Type: application/json
+
+{
+    "title": "Video 1",
+    "description": "Description 1",
+    "year_launched": 2020,
+    "is_opened": false,
+    "rating": "L",
+    "duration": 90,
+    "categories_id": [
+        "{{categoryId}}"
+    ],
+    "genres_id": [
+        "{{genreId}}"
+    ],
+    "cast_members_id": [
+        "{{castMemberId}}"
+    ]
+}
+
+###
+
+@videoId = {{createVideo.response.body.data.id}}
+
+###
+
+GET http://localhost:3000/videos/{{videoId}}
+
+
+###
+# @name updateVideo
+PATCH http://localhost:3000/videos/{{videoId}}
+Content-Type: application/json
+
+{
+    "title": "Video 1aaaa",
+    "description": "Description 1aaaa",
+    "year_launched": 2021,
+    "is_opened": false,
+    "rating": "L",
+    "duration": 90,
+    "categories_id": [
+        "{{categoryId}}"
+    ],
+    "genres_id": [
+        "{{genreId}}"
+    ],
+    "cast_members_id": [
+        "{{castMemberId}}"
+    ]
+}
+
+###
+
+###
+# @name uploadVideo
+PATCH http://localhost:3000/videos/{{videoId}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary1234
+
+------WebKitFormBoundary1234
+Content-Disposition: form-data; name="video"; filename="video.mp4"
+Content-Type: video/mp4
+
+< ./package.json
+------WebKitFormBoundary1234--
+
+
+###
+GET http://localhost:3000/fake-event
+
+###
+GET http://localhost:3000/rabbitmq-fake
+
+###
+
+### Estou usando host.docker.internal, porque no momento o dev container com rest client está fazendo requisição de dentro do container, 
+### então por localhost:8080 não funciona, mas se estiver usando o rest client fora do container, pode usar localhost:8080
+POST http://host.docker.internal:8080/realms/codeflix/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+username=admin@user.com
+&password=secret
+&grant_type=password
+&client_id=codeflix-admin-frontend
+
+### configuração do openid connect server
+GET http://host.docker.internal:8080/realms/codeflix/.well-known/openid-configuration
+
+### certificados
+GET http://host.docker.internal:8080/realms/codeflix/protocol/openid-connect/certs
+
+###
+POST http://localhost:3000/auth
+Content-Type: application/json
+
+{
+    "email": "admin@user.com",
+    "password": "123456"
+}
+
+###
+
+@jwtToken = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiYWRtaW4tY2F0YWxvZyJdfSwiaWF0IjoxNzAyNTU2NzU5LCJleHAiOjE3MDI2NDMxNTl9.VwEHk-2ZkgveV-Ghp_X3NiwEysda-pkWArYueaKqkB_SljIVjmP2jgVr28fdVyc0dTTYlkmUimKKFI2_ce3n2Xnb6AXVr2xcEibUbdgL71WYw27P8jZ-Y6V2cvIJnZqFeDD4rtzkrqXOqyzr5EImYURdDG3r7_R6BLpfyz4CGNIK9wYVfTXT85EzFl_noMdCGQxUZSojHKIWivxd9xWQGTckYOivJODM5xpDPUAuJm3r2bAcCfNA8JWDyZs3zZtDVgzMeLCFrq3VOOe6FnkuaDULj7_adO6EJ43lYHQxHXY2tcGO4_wxX0fJ9tuTtrYBpz2FCISN8tc5EaDNLIZnhg
+
+###
+GET http://localhost:3000/auth
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
