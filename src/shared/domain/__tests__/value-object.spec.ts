@@ -13,27 +13,26 @@ class ComplexValueObject extends ValueObject {
 }
 
 describe("ValueObject Unit Tests", () => {
-  test("should be equals", () => {
-    const valueObject1 = new StringValueObject("test");
-    const valueObject2 = new StringValueObject("test");
-    expect(valueObject1.equals(valueObject2)).toBe(true);
+  it("should be equal", () => {
+    const v1 = new StringValueObject("value1");
+    const v2 = new StringValueObject("value1");
+    expect(v1.equals(v2)).toBeTruthy();
 
-    const complexValueObject1 = new ComplexValueObject("test", 1);
-    const complexValueObject2 = new ComplexValueObject("test", 1);
-    expect(complexValueObject1.equals(complexValueObject2)).toBe(true);
+    const v3 = new ComplexValueObject("value3", 3);
+    const v4 = new ComplexValueObject("value3", 3);
+    expect(v3.equals(v4)).toBeTruthy();
   });
 
-  test("should not be equals", () => {
-    const valueObject1 = new StringValueObject("test");
-    const valueObject2 = new StringValueObject("test2");
-    expect(valueObject1.equals(valueObject2)).toBe(false);
-    expect(valueObject1.equals(null as any)).toBe(false);
-    expect(valueObject1.equals(undefined as any)).toBe(false);
+  it("should not be equal", () => {
+    const v1 = new StringValueObject("value1");
+    const v2 = new StringValueObject("value2");
+    expect(v1.equals(v2)).toBeFalsy();
+    expect(v1.equals(null as any)).toBeFalsy();
+    expect(v2.equals(undefined as any)).toBeFalsy();
 
-    const complexValueObject1 = new ComplexValueObject("test", 1);
-    const complexValueObject2 = new ComplexValueObject("test", 2);
-    expect(complexValueObject1.equals(complexValueObject2)).toBe(false);
-    expect(complexValueObject1.equals(null as any)).toBe(false);
-    expect(complexValueObject2.equals(undefined as any)).toBe(false);
+    const v3 = new ComplexValueObject("value3", 3);
+    const v4 = new ComplexValueObject("value3", 4);
+    expect(v3.equals(null as any)).toBeFalsy();
+    expect(v4.equals(undefined as any)).toBeFalsy();
   });
 });

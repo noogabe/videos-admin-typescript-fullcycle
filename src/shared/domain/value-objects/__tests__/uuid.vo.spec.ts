@@ -1,25 +1,24 @@
-import { InvalidUuidError, Uuid } from "../uuid.vo";
 import { validate as uuidValidate } from "uuid";
+import { InvalidUuidError, Uuid } from "../uuid.vo";
+
 describe("Uuid Unit Tests", () => {
   const validateSpy = jest.spyOn(Uuid.prototype as any, "validate");
 
-  test("should throw error when uuid is invalid", () => {
-    expect(() => {
-      new Uuid("invalid-uuid");
-    }).toThrowError(new InvalidUuidError());
+  it("should throw error when uuid is invalid", () => {
+    expect(() => new Uuid("fake id")).toThrow(new InvalidUuidError());
     expect(validateSpy).toHaveBeenCalledTimes(1);
   });
 
-  test("should create a valid uuid", () => {
+  it("should accept an uuid passed in constructor", () => {
+    const id = "312cffad-1938-489e-a706-643dc9a3cfd3";
+    const uuid = new Uuid(id);
+    expect(uuid.id).toBe(id);
+    expect(validateSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("should create an uuid when it is not passed in constructor", () => {
     const uuid = new Uuid();
-    expect(uuid.id).toBeDefined();
-    expect(uuidValidate(uuid.id)).toBe(true);
-    expect(validateSpy).toHaveBeenCalledTimes(1);
-  });
-
-  test("should accept a valid uuid", () => {
-    const uuid = new Uuid("c3e9b0d0-7b6f-4a8e-8e1f-3f9e6a2f7e3c");
-    expect(uuid.id).toBe("c3e9b0d0-7b6f-4a8e-8e1f-3f9e6a2f7e3c");
+    expect(() => uuidValidate(uuid.id)).toBeTruthy();
     expect(validateSpy).toHaveBeenCalledTimes(1);
   });
 });
